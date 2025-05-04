@@ -1,0 +1,238 @@
+/* styles.css */
+
+/* --- NAVIGATION BAR --- */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  background: #b399c8;
+}
+nav ul li {
+  padding: 0.75rem 1rem;
+  transition: background 0.2s;
+}
+nav ul li:hover {
+  background: #7b629e; /* hover color change */
+}
+nav ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-family: sans-serif;
+}
+
+/* --- AUDIO INSTRUCTIONS DIV --- */
+#audio-instructions {
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #f9f9f9;
+  padding: 1rem;
+  margin: 2rem auto 0;
+  max-width: 600px;
+  font-family: sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+#audio-instructions p {
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+#audio-instructions button {
+  margin-right: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+#audio-on {
+  background: #4caf50;
+  color: white;
+}
+#audio-off {
+  background: #f44336;
+  color: white;
+}
+
+/* Custom button */
+.custom-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.custom-button:hover {
+  background-color: #45a049;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 16px;
+}
+/* Carousel container */
+#dogCarousel {
+  width: 600px;
+  height: 400px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+#dogCarousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Custom button styling */
+.custom-button {
+  background-color: #133550;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.custom-button:hover {
+  background-color: #8472ac;
+}
+/* Breed buttons container */
+#breedButtons {
+  margin-bottom: 24px;
+}
+/* Info container (hidden until breed selected) */
+#breedInfo {
+  display: none;
+  border: 1px solid #ccc;
+  padding: 16px;
+  max-width: 600px;
+}
+#breedInfo h3 {
+  margin-top: 0;
+}
+
+/* Container for the buttons */
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Custom button style */
+.btn-custom {
+  padding: 0.75em 1.5em;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Center all page content */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: sans-serif; /* or whatever you prefer */
+  background-color: #b399c8;
+}
+
+nav ul li {
+  margin: 0 1rem;
+}
+
+/* Headline centered and with some breathing room */
+h1 {
+  margin: 2rem 0 1rem;
+  font-size: 2.5rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+h2 {
+  margin: 2rem 0 1rem;
+  font-size: 2.5rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+th {
+  margin: 2rem 0 1rem;
+  font-size: 1rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Center the button group */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Center the quote container */
+#quote {
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+/* Center the audio instructions box */
+#audio-instructions {
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+#lookupButton {
+  color: #ddd;
+
+  padding: 15px 25px;
+  border-radius: 100px;
+  background-color: #4c43cd;
+  background-image: radial-gradient(
+      93% 87% at 87% 89%,
+      rgba(0, 0, 0, 0.23) 0%,
+      transparent 86.18%
+    ),
+    radial-gradient(
+      66% 87% at 26% 20%,
+      rgba(255, 255, 255, 0.41) 0%,
+      rgba(255, 255, 255, 0) 69.79%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  box-shadow: 2px 19px 31px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  font-size: 16px;
+}

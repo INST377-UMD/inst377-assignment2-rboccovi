@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dogs Page</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Simple-Slider CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/simple-slider@1.0.0/dist/simple-slider.min.css"
+    />
+    <!-- Annyang for voice commands -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+    <!-- Simple-Slider JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/simple-slider@1.0.0/dist/simple-slider.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="stocks.html">Stocks</a></li>
+        <li><a href="dogs.html">Dogs</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h1>Random Dog Gallery</h1>
+
+      <!-- Carousel: data-simple-slider attribute required -->
+      <div
+        id="dogCarousel"
+        data-simple-slider
+        style="max-width: 600px; margin: 1rem auto; overflow: hidden"
+      ></div>
+
+      <!-- Breed buttons -->
+      <h2>Dog Breeds</h2>
+      <div
+        id="breedButtons"
+        style="display: flex; flex-wrap: wrap; gap: 0.5rem"
+      >
+        <!-- Buttons injected here -->
+      </div>
+
+      <!-- Breed info -->
+      <div
+        id="breedInfo"
+        style="
+          max-width: 600px;
+          margin: 1rem auto;
+          display: none;
+          padding: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        "
+      ></div>
+    </main>
+
+    <div id="audio-instructions">
+      <p>
+        <strong>Audio Navigation Instructions:</strong><br />
+
+        Make sure mic is enabled to be able to use this feature.<br /><br />
+        Use this command : "load dog breed *breed name* to find out more info on
+        the dog breed of your choice<br /><br />
+         Use this command: "hello" to get a hello back!<br /><br  />
+        Use this command : “Change the color to [color name]” to change the
+        background of this page<br /><br />
+        Use this command : “Navigate to [Home|Stocks|Dogs]” to jump pages.<br />
+      </p>
+      <button id="audio-on">Turn On Audio</button>
+      <button id="audio-off">Turn Off Audio</button>
+    </div>
+
+    <script>
+      const POLYGON_API_KEY = "9PF7Gu78ez5O52wslHIOXw7YwfJBWxQu";
+      let chart;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1) Load 10 random dog images into carousel
+        fetch("https://dog.ceo/api/breeds/image/random/10")
+          .then((res) => res.json())
+          .then(({ message: urls }) => {
+            const carousel = document.getElementById("dogCarousel");
+            urls.forEach((src) => {
+              const img = document.createElement("img");
+              img.src = src;
+              img.style.width = "100%";
+              carousel.appendChild(img);
+            });
+            // Initialize all simple-slider carousels on the page
+            simpleslider.getSlider();
+          })
+          .catch((err) => console.error("Error loading images:", err));
+
+        // 2) Load breed list and create buttons
+        fetch("https://dog.ceo/api/breeds/list/all")
+          .then((res) => res.json())
+          .then(({ message: breeds }) => {
+            const btnContainer = document.getElementById("breedButtons");
+            Object.keys(breeds).forEach((breedKey) => {
+              const btn = document.createElement("button");
+              btn.className = "custom-button";
+              btn.textContent =
+                breedKey.charAt(0).toUpperCase() + breedKey.slice(1);
+              btn.addEventListener("click", () => loadBreedInfo(breedKey));
+              btnContainer.appendChild(btn);
+            });
+          })
+          .catch((err) => console.error("Error loading breeds:", err));
+
+        // 3) Fetch and display breed info
+        function loadBreedInfo(breedKey) {
+          const info = document.getElementById("breedInfo");
+          info.style.display = "block";
+          info.innerHTML = "<p>Loading...</p>";
+
+          // Use TheDogAPI to get breed details
+          fetch(`https://api.thedogapi.com/v1/breeds/search?q=${breedKey}`)
+            .then((res) => res.json())
+            .then((arr) => {
+              if (!arr.length) {
+                info.innerHTML = `<p>No information found for ${breedKey}.</p>`;
+                return;
+              }
+              const d = arr[0];
+              const name = d.name;
+              const description = d.bred_for || "No description available.";
+              // Parse life span
+              let minLife = "N/A",
+                maxLife = "N/A";
+              if (d.life_span) {
+                const parts = d.life_span.replace(" years", "").split(" - ");
+                if (parts[0]) minLife = parts[0].trim();
+                if (parts[1]) maxLife = parts[1].trim();
+              }
+              info.innerHTML = `
+                      <h3>${name}</h3>
+                      <p><strong>Description:</strong> ${description}</p>
+                      <p><strong>Min Life:</strong> ${minLife} years</p>
+                      <p><strong>Max Life:</strong> ${maxLife} years</p>
+                    `;
+            })
+            .catch((err) => {
+              info.innerHTML = "<p>Error loading breed info.</p>";
+              console.error(err);
+            });
+        }
+
+        // 4) Voice command: "load dog breed <breed>"
+
+        if (window.annyang) {
+          annyang.addCommands({
+            // load a dog breed
+            "load dog breed *breed": (spoken) => {
+              const key = spoken.toLowerCase().replace(/\s+/g, "");
+              loadBreedInfo(key);
+            },
+            // change the background color
+            "change the color to *color": (color) => {
+              document.body.style.backgroundColor = color;
+            },
+            // navigate pages
+            "navigate to :p": (p) => {
+              const page = p.toLowerCase();
+              if (["home", "stocks", "dogs"].includes(page)) {
+                window.location.href =
+                  page === "home" ? "index.html" : `${page}.html`;
+              }
+            }, // ← no comma here
+          });
+
+          // start Annyang (paused by default)
+          annyang.start({ autoRestart: true, continuous: false });
+        }
+
+        if (window.annyang) {
+          annyang.addCommands({
+            hello: () => alert("Hello World!"),
+            "change the color to :c": (c) =>
+              (document.body.style.backgroundColor = c),
+            "navigate to :p": (p) => {
+              const page = p.toLowerCase();
+              if (["home", "stocks", "dogs"].includes(page)) {
+                window.location.href =
+                  page === "home" ? "index.html" : `${page}.html`;
+              }
+            },
+
+            "load dog breed *breed": (spoken) => {
+              const key = spoken.toLowerCase().replace(/\s+/g, "");
+              loadBreedInfo(key);
+            },
+          });
+          annyang.abort();
+          document
+            .getElementById("audio-on")
+            .addEventListener("click", () =>
+              annyang.start({ autoRestart: true })
+            );
+          document
+            .getElementById("audio-off")
+            .addEventListener("click", () => annyang.abort());
+        }
+      });
+    </script>
+  </body>
+</html>

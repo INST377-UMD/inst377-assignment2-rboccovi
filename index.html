@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Class Activities - Home</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="stocks.html">Stocks</a></li>
+        <li><a href="dogs.html">Dogs</a></li>
+      </ul>
+    </nav>
+
+    <h1>Welcome to Class Activities</h1>
+
+    <div class="buttons">
+      <button class="btn-custom" onclick="location.href='stocks.html'">
+        Go to Stocks
+      </button>
+      <button class="btn-custom" onclick="location.href='dogs.html'">
+        Go to Dogs
+      </button>
+    </div>
+
+    
+
+    <!-- Quote will appear here -->
+    <div id="quote"></div>
+
+    <div id="audio-instructions">
+      <p>
+        <strong>Audio Navigation Instructions:</strong><br />
+
+        Make sure mic is enabled to be able to use this feature.<br /><br />
+        Use this command : “Lookup [ticker]” to fetch the 30-day chart
+        <br /><br />
+        Use this command: "hello" to get a hello back!<br /><br />
+        Use this command : “Change the color to [color name]” to change the
+        background of this page<br /><br />
+        Use this command : “Navigate to [Home|Stocks|Dogs]” to jump pages.<br />
+      </p>
+      <button id="audio-on">Turn On Audio</button>
+      <button id="audio-off">Turn Off Audio</button>
+    </div>
+
+    <script>
+      // Fetch and display a random quote on page load
+      fetch("https://zenquotes.io/api/random")
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((arr) => {
+          const { q, a } = arr[0];
+          document.getElementById("quote").textContent = `"${q}" — ${a}`;
+        })
+        .catch((err) => {
+          console.error("Quote fetch error:", err);
+          document.getElementById("quote").textContent =
+            "Unable to load quote at this time.";
+        });
+
+      if (window.annyang) {
+        annyang.addCommands({
+          hello: () => alert("Hello World!"),
+          "change the color to :c": (c) =>
+            (document.body.style.backgroundColor = c),
+          "navigate to :p": (p) => {
+            const page = p.toLowerCase();
+            if (["home", "stocks", "dogs"].includes(page)) {
+              window.location.href =
+                page === "home" ? "index.html" : `${page}.html`;
+            }
+          },
+        });
+        annyang.abort();
+        document
+          .getElementById("audio-on")
+          .addEventListener("click", () =>
+            annyang.start({ autoRestart: true })
+          );
+        document
+          .getElementById("audio-off")
+          .addEventListener("click", () => annyang.abort());
+      }
+    </script>
+  </body>
+</html>
